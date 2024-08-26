@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap');
+:root{
+    --color: #292828;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: var(--color);
+}
+
+html, body{
+    background-color: #F4F4F4 !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header{
+    align-items: center;
+}
+
+main{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+footer{
+    background-color: var(--color);
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+   
+}
+
+footer > img{
+    width: 20rem;
+}
+
+.header-txt > h2{
+    font-weight: 600;
+}
+
+h2 + p{
+    font-weight: 300;
+    font-size: 1.2rem;
+}
+
+.todoInput{
+    background-color: #C0C0C0;
+    border: none;
+    height: 2.5rem;
+    border-radius:0.5rem ;
+    width: 30rem;
+    padding: 1rem;
+}
+
+.add-content{
+    background: none;
+    border: none;
+}
+
+.AddTodoForm{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.todoList {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding-left: 0;
+    background-color: rgb(254, 254, 254);
+    padding: 1rem;
+    border-radius: 0.3rem;
+}
+
+#TodoList{
+    padding-left: 0 !important;
+}
+
+#checkbox {
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: var(--color);
+}
+
+.trash{
+    color: var(--color);
+    cursor: pointer;
+}
+
+.btn-delete{
+    border: none;
+    background: none;
+}
+
+.line-through{
+    text-decoration: line-through;
+}
+
+.text{
+    margin-bottom: 0 !important;
+}
+
