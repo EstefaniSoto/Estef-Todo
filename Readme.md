@@ -24,16 +24,15 @@
    ```bash
    git clone https://github.com/usuario/estef-todo.git
 
-## Navegar al Directorio del Proyecto:
+## 🔭 Navegar al Directorio del Proyecto:
 
-bash
-Copy code
-cd estef-todo
+    cd estef-todo
+
 Abrir el Proyecto: Puede abrir los archivos directamente en su navegador o utilizar un editor de texto de su elección.
 
-##🖥️ Uso
+## 🖥️ Uso
 Abra el archivo index.html en su navegador.
 Empiece a añadir, completar o eliminar tareas según sea necesario.
 
-##🤝 Contribuciones
+## 🤝 Contribuciones
 Si desea contribuir a este proyecto, siéntase libre de hacer un fork del repositorio, realizar sus cambios y enviar un pull request. ¡Las contribuciones son bienvenidas! 🎉
