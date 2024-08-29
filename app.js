@@ -1,101 +1,109 @@
-// Esta línea de código se asegura de que la página esté totalmente lista antes de que comience a ejecutarse el JavaScript.
 document.addEventListener("DOMContentLoaded", () => {
-    // Obtener elementos del DOM
-    const todoList = document.getElementById("TodoList"); // Contenedor de la lista de tareas
-    const noTasksMessage = document.getElementById("noTasksMessage"); // Mensaje cuando no hay tareas
-    const addTodoForm = document.querySelector(".AddTodoForm"); // Formulario para agregar nuevas tareas
-    const todoInput = document.getElementById("todoInput"); // Campo de entrada para nueva tarea
+    // Esta constante se encarga de almacenar la lista donde se mostrarán las tareas
+    const todoList = document.getElementById("TodoList");
 
-    // Recuperar la lista de tareas almacenada en localStorage o iniciar una lista vacía
+    // Esta constante muestra un mensaje si no hay tareas en la lista
+    const noTasksMessage = document.getElementById("noTasksMessage");
+
+    // Aquí capturo el formulario que me permitirá agregar nuevas tareas
+    const addTaskForm = document.getElementById("addTaskForm");
+
+    // Recupero las tareas que he guardado previamente en el almacenamiento local, o creo un array vacío si no hay ninguna
     const todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-    // Función para renderizar las tareas en el DOM
+    // Esta función se encarga de mostrar todas las tareas en la interfaz
     const renderTodos = () => {
-        todoList.innerHTML = ""; // Limpiar la lista de tareas actual en el DOM
-        
-        // Mostrar u ocultar el mensaje que verifica si hay o no tarea
+        // Limpio la lista antes de agregar las tareas actualizadas
+        todoList.innerHTML = "";
+
+        // Si hay tareas, oculto el mensaje de "No hay tareas"; de lo contrario, lo muestro
         noTasksMessage.classList.toggle("d-none", todos.length > 0);
 
+        // Recorro cada tarea y la agrego a la lista
         todos.forEach((todo, index) => {
-            // Crear un nuevo elemento de lista para cada tarea
+            // Creo un elemento 'li' para cada tarea
             const todoItem = document.createElement("li");
-            todoItem.className = "d-flex justify-content-between todoList mb-2";
+            todoItem.className = `todoItem ${todo.completed ? 'completed' : ''}`;
+
+            // Aquí defino el contenido de cada tarea en la lista
             todoItem.innerHTML = `
-                <div class="d-flex gap-2 align-items-center">
+                <div class="title">${todo.title}</div>
+                <div class="description">${todo.description}</div>
+                <div class="date-time">${todo.date} ${todo.time}</div>
+                <div class="actions">
                     <input type="checkbox" id="checkbox" ${todo.completed ? 'checked' : ''}>
-                    <p class="text ${todo.completed ? 'line-through' : ''}">${todo.text}</p>
+                    <button class="btn-delete">
+                        <i class="bi bi-trash3-fill" style="font-size: 1.3rem;"></i>
+                    </button>
                 </div>
-                <button class="btn-delete">
-                    <i class="bi bi-trash3-fill" style="font-size: 1.3rem;"></i>
-                </button>
             `;
-            // Añadir el nuevo elemento a la lista
+
+            // Agrego la tarea al DOM
             todoList.appendChild(todoItem);
 
-            // Manejar el cambio en el estado del checkbox (completar tarea)
+            // Manejo el cambio de estado de la tarea (completada/no completada)
             todoItem.querySelector("#checkbox").addEventListener("change", () => {
-                todos[index].completed = !todos[index].completed; // Cambiar el estado completado
-                updateLocalStorage(); // Actualizar el almacenamiento local
-                renderTodos(); // Volver a renderizar la lista de tareas
+                todos[index].completed = !todos[index].completed;
+                updateLocalStorage();
+                renderTodos(); // Vuelvo a renderizar las tareas para reflejar los cambios
             });
 
-            // Manejar el clic en el botón de eliminar tarea
+            // Manejo la eliminación de una tarea
             todoItem.querySelector(".btn-delete").addEventListener("click", () => {
-                todos.splice(index, 1); // Eliminar la tarea del array
-                updateLocalStorage(); // Actualizar el almacenamiento local
-                renderTodos(); // Volver a renderizar la lista de tareas
+                todos.splice(index, 1); // Elimino la tarea del array
+                updateLocalStorage();
+                renderTodos(); // Vuelvo a renderizar las tareas después de eliminar una
             });
         });
     };
 
-    // Función para actualizar el almacenamiento local con la lista de tareas
+    // Esta función guarda las tareas actualizadas en el almacenamiento local
     const updateLocalStorage = () => {
-        localStorage.setItem("todos", JSON.stringify(todos)); // Guardar la lista de tareas en localStorage
+        localStorage.setItem("todos", JSON.stringify(todos));
     };
 
-    // Manejar el envío del formulario para agregar una nueva tarea
-    addTodoForm.addEventListener("submit", (e) => {
-        e.preventDefault(); // Evitar el envío del formulario por defecto
-        
-        // Obtiene el texto de la nueva tarea y elimina espacios en blanco al principio y al final
-        const newTodoText = todoInput.value.trim();
-        
-        // Valida que el texto no esté vacío y que la tarea no exista ya
-        if (newTodoText === "") {
-            // Mostrar alerta si el texto está vacío
+    // Aquí manejo el evento de envío del formulario para agregar una nueva tarea
+    addTaskForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Obtengo y limpio los valores ingresados por el usuario
+        const title = document.getElementById("taskTitle").value.trim();
+        const description = document.getElementById("taskDescription").value.trim();
+        const date = document.getElementById("taskDate").value;
+        const time = document.getElementById("taskTime").value;
+
+        // Valido que todos los campos estén completos antes de agregar la tarea
+        if (title === "" || description === "" || date === "" || time === "") {
             Swal.fire({
                 title: 'Error!',
-                text: 'La tarea no puede estar vacía.',
+                text: 'Todos los campos son requeridos.',
                 icon: 'error',
-                confirmButtonText: 'Entendido',
-                didOpen: () => {
-                    document.body.style.overflow = 'hidden'; // Evita el scroll
-                },
-                didClose: () => {
-                    document.body.style.overflow = ''; // Restaura el scroll
-                }
+                confirmButtonText: 'Entendido'
             });
-            
-
-        } else if (todos.some(todo => todo.text.toLowerCase() === newTodoText.toLowerCase())) {
-            // Mostrar alerta si la tarea ya existe (sin importar mayúsculas o minúsculas)
+        } else if (todos.some(todo => todo.title.toLowerCase() === title.toLowerCase() && todo.date === date && todo.time === time)) {
             Swal.fire({
                 title: 'Error!',
                 text: 'La tarea ya existe.',
                 icon: 'error',
                 confirmButtonText: 'Entendido'
             });
-
         } else {
-            // Añadir nueva tarea a la lista si la validación es exitosa
-            todos.push({ text: newTodoText, completed: false });
-            updateLocalStorage(); // Actualizar el almacenamiento local
-            renderTodos(); // Volver a renderizar la lista de tareas
-            todoInput.value = ""; // Limpiar el campo de entrada
+            // Agrego la nueva tarea al array y actualizo la interfaz y el almacenamiento
+            todos.push({ title, description, date, time, completed: false });
+            updateLocalStorage();
+            renderTodos();
+            
+            // Cierro el modal después de agregar la tarea
+            const modalElement = document.getElementById('addTaskModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
+
+            // Reseteo el formulario para dejarlo limpio para la próxima tarea
+            addTaskForm.reset();
         }
     });
 
-    // Función para actualizar la fecha actual en el elemento <p>
+    // Esta función se encarga de actualizar y mostrar la fecha actual en la interfaz
     const updateDate = () => {
         const dateElement = document.getElementById("currentDate");
         const now = new Date();
@@ -103,8 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateElement.textContent = `Hoy, ${now.toLocaleDateString('es-ES', options)}`;
     };
 
-    // Ejecuta la función de actualización de la fecha
+    // Llamo a las funciones iniciales cuando la página carga
     updateDate();
-
-    renderTodos(); // Renderiza las tareas al cargar la página
+    renderTodos();
 });
